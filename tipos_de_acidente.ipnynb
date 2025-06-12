@@ -1,0 +1,36 @@
+import seaborn as sns
+import matplotlib.pyplot as plt
+import pandas as pd
+
+# Carregando a planilha CSV
+# Usamos o separador ';' pois é comum em arquivos brasileiros
+# encoding='latin1' para evitar erro com acentos
+df = pd.read_csv('/content/datatran2024.csv', sep=';', encoding='latin1')  # Obs:/content/ é a pasta padrão do Google Colab, onde os arquivos enviados e salvos ficam
+
+
+# Limpeza dos dados
+# Converter a coluna de data para o formato datetime
+df['data_inversa'] = pd.to_datetime(df['data_inversa'], format='%Y-%m-%d', errors='coerce')
+# Criar uma nova coluna com o número do mês
+df['mes'] = df['data_inversa'].dt.month
+
+# Definindo colunas essenciais que não podem estar vazias
+colunas_essenciais = [
+    'data_inversa', 'uf', 'municipio',
+    'causa_acidente', 'tipo_acidente',
+    'classificacao_acidente'
+]
+# Removendo linhas que têm valores ausentes nessas colunas
+df = df.dropna(subset=colunas_essenciais)
+
+# Passo 3: Filtrar apenas os estados do Sul
+ufs_sul = ['PR', 'SC', 'RS']
+df_sul = df[df['uf'].isin(ufs_sul)]
+
+
+plt.figure(figsize=(12, 6))
+sns.countplot(data=df_sul, y='tipo_acidente', order=df_sul['tipo_acidente'].value_counts().index[:10], palette='rocket')
+plt.title('Top 10 Tipos de Acidente no Sul (2024)')
+plt.xlabel('Total de Acidentes')
+plt.ylabel('Tipo de Acidente')
+plt.show()
