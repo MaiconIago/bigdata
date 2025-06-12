@@ -90,5 +90,3 @@ Este trabalho reforça o potencial transformador do Big Data em contextos acadê
 
 ---
 
-## 📂 Estrutura Recomendada do Repositório
-
